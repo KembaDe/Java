@@ -1,0 +1,23 @@
+class Solution {
+    int maxPathSum = Integer.MIN_VALUE;
+
+    public int maxPathSum(TreeNode root) {
+        gain(root);
+        return maxPathSum;
+    }
+
+    private int gain(TreeNode node) {
+        if (node == null) return 0;
+
+        // Recursively get the max gain from left and right subtrees
+        // Use Math.max(0, ...) to ignore paths that decrease the sum
+        int left = Math.max(0, gain(node.left));
+        int right = Math.max(0, gain(node.right));
+
+        // Check if the path "peaking" at this node is the new global max
+        maxPathSum = Math.max(maxPathSum, node.val + left + right);
+
+        // Return the max gain this node can provide to its parent
+        return node.val + Math.max(left, right);
+    }
+}
