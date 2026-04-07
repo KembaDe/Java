@@ -1,0 +1,30 @@
+class Solution {
+    public int maxCoins(int[] nums) {
+        int n = nums.length;
+        // Step 1: Pad the array with 1s at both ends to handle boundaries
+        int[] arr = new int[n + 2];
+        arr[0] = 1;
+        arr[n + 1] = 1;
+        System.arraycopy(nums, 0, arr, 1, n);
+
+        // Step 2: Initialize the DP table
+        // dp[i][j] represents max coins for bursting balloons between index i and j (exclusive)
+        int[][] dp = new int[n + 2][n + 2];
+
+        // Step 3: Fill the DP table by interval size
+        for (int len = 1; len <= n; len++) { // length of the interval
+            for (int left = 1; left <= n - len + 1; left++) {
+                int right = left + len - 1;
+                // Try every balloon k in the range [left, right] as the LAST to burst
+                for (int k = left; k <= right; k++) {
+                    int coins = arr[left - 1] * arr[k] * arr[right + 1];
+                    // Add coins from left and right sub-intervals
+                    coins += dp[left][k - 1] + dp[k + 1][right];
+                    dp[left][right] = Math.max(dp[left][right], coins);
+                }
+            }
+        }
+
+        return dp[1][n];
+    }
+}
